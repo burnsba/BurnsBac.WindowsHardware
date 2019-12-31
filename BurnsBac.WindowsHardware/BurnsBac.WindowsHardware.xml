@@ -1,0 +1,1222 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BurnsBac.WindowsHardware</name>
+    </assembly>
+    <members>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.BluetoothCharacteristicInfo">
+            <summary>
+            High level information for a bluetooth characteristic.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothCharacteristicInfo.Id">
+            <summary>
+            Gets or sets UUID of characteristic.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothCharacteristicInfo.AssignedNumber">
+            <summary>
+            Gets assigned number of characteristic.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.BluetoothDeviceInfo">
+            <summary>
+            High level information for a bluetooth device.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothDeviceInfo.Address">
+            <summary>
+            Gets or sets device address.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothDeviceInfo.LocalName">
+            <summary>
+            Gets or sets device local name.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothDeviceInfo.ServiceUuids">
+            <summary>
+            Gets or sets service UUIDs for device.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothDeviceInfo.Services">
+            <summary>
+            Gets or sets services for device.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothDeviceInfo.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase">
+            <summary>
+            Base class to interact with bluetooth sensor devices.
+            </summary>
+            <remarks>
+            https://blogs.msdn.microsoft.com/cdndevs/2017/04/28/uwp-working-with-bluetooth-devices-part-1/
+            </remarks>
+        </member>
+        <member name="E:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.DataReceivedEvent">
+            <summary>
+            Event notification for data received from device.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.OnDataReceived(BurnsBac.WindowsHardware.Bluetooth.SesnsorReadEventArgs)">
+            <summary>
+            Event delegate to notify state change events.
+            </summary>
+            <param name="sender">Sender.</param>
+            <param name="state">Device event data.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.#ctor(System.UInt64,System.UInt16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase"/> class.
+            </summary>
+            <param name="deviceAddress">Bluetooth device address.</param>
+            <param name="characteristicAssignedNumber">Assigned number of the chactertistic to be read from device.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.#ctor(System.UInt64,System.UInt16,System.UInt16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase"/> class.
+            </summary>
+            <param name="deviceAddress">Bluetooth device address.</param>
+            <param name="serviceAssignedNumber">Assigned number of the parent service of the characteristic to be read from device.</param>
+            <param name="characteristicAssignedNumber">Assigned number of the chactertistic to be read from device.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.FindCharacteristic">
+            <summary>
+            Finds the characteristic on the bluetooth device. If the characteristic was previously found,
+            nothing happens.
+            </summary>
+            <returns>Connection status. 0 is unitialized, 1 is connecting, 2 is connected.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.SetupCharacteristicHook">
+            <summary>
+            Tries to find the desired characteristic on the device.
+            </summary>
+            <returns>Void.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.FindCharacteristicInService(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService,System.UInt16)">
+            <summary>
+            Helper function, enumerates a service searching for a specific characteristic.
+            </summary>
+            <param name="service">Service to enumerate.</param>
+            <param name="characteristicAssignedNumber">Characteristic to find.</param>
+            <returns><see cref="T:Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic"/> of found characteristic, or null.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.EnableNotifications">
+            <summary>
+            Enables active notifications from the device.
+            </summary>
+            <returns>Status from trying to change ConfigurationDescriptor on device.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.DisableNotifications">
+            <summary>
+            Disables active notifications from the device.
+            </summary>
+            <returns>Status from trying to change ConfigurationDescriptor on device.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.ReadValue">
+            <summary>
+            Reads data from connected characteristic.
+            </summary>
+            <returns>Data from device.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.BluetoothSensorBase.dataCharacteristic_ValueChanged(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic,Windows.Devices.Bluetooth.GenericAttributeProfile.GattValueChangedEventArgs)">
+            <summary>
+            Event handler when received data via notification from device.
+            </summary>
+            <param name="sender">Sender.</param>
+            <param name="args">Data.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.BluetoothServiceInfo">
+            <summary>
+            High level information for a bluetooth service.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothServiceInfo.Id">
+            <summary>
+            Gets or sets service UUID.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.BluetoothServiceInfo.Characteristics">
+            <summary>
+            Gets or sets characteristics associated with service.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.CharacteristicUuids">
+            <summary>
+            Constants and helper functions for characteristics.
+            </summary>
+            <remarks>
+            https://www.bluetooth.com/specifications/gatt/characteristics/
+            </remarks>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.CharacteristicUuids.AssignedNumbers">
+            <summary>
+            List of assigned numbers.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Characteristics.CharacteristicUuids.CharacteristicToString(System.Guid)">
+            <summary>
+            Gets the display name of the characteristic.
+            </summary>
+            <param name="characteristicUuid">UUID to find name of.</param>
+            <returns>Name of assigned number, or string.empty.</returns>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement">
+            <summary>
+            Heart rate measurement characteristic.
+            </summary>
+            <remarks>
+            https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.heart_rate_measurement.xml
+            </remarks>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.SensorContactStatus">
+            <summary>
+            Sensor contact status.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.EnergyExpendedEnum">
+            <summary>
+            Energy expended present flag.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.RrIntervalEnum">
+            <summary>
+            Energy expended present flag.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.ContactStatus">
+            <summary>
+            Gets or sets sensor contact status.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.EnergyExpendedPresent">
+            <summary>
+            Gets or sets whether or not energy expended data is present.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.RrIntervalPresent">
+            <summary>
+            Gets or sets whether or not RR-Interval data is present.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.HeartRate">
+            <summary>
+            Gets or sets heart rate. Units: beats per minute (bpm).
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.EnergyExpended">
+            <summary>
+            Gets or sets energy expended. Units: kilo Joules.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.RrIntervals">
+            <summary>
+            Gets or sets RR-Intervals. The RR-Interval value represents the time between two R-Wave detections. Resolution of 1/1024 second.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.SensorContactStatusToString(BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.SensorContactStatus)">
+            <summary>
+            Converts <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.SensorContactStatus"/> to specification text.
+            </summary>
+            <param name="e">Object to convert.</param>
+            <returns>Standard text.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.EneryExpendedToString(BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.EnergyExpendedEnum)">
+            <summary>
+            Converts <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.EnergyExpendedEnum"/> to specification text.
+            </summary>
+            <param name="e">Object to convert.</param>
+            <returns>Standard text.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.RrIntervalToString(BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.RrIntervalEnum)">
+            <summary>
+            Converts <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.RrIntervalEnum"/> to specification text.
+            </summary>
+            <param name="e">Object to convert.</param>
+            <returns>Standard text.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.FromBytes(System.Byte[],System.Int32)">
+            <summary>
+            Converts a raw characteristic data reading into a <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement"/>. This reads to the end of the byte array.
+            </summary>
+            <param name="bytes">Bytes to read from.</param>
+            <param name="offset">Offset to start reading from.</param>
+            <returns>Parsed data result.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException">
+            <summary>
+            Thrown when characteristic can't be found on bluetooth device.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException"/> class.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+            <param name="innerException">Inner exception.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.CharacteristicNotFoundException"/> class.
+            </summary>
+            <param name="info">SerializationInfo.</param>
+            <param name="context">StreamingContext.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException">
+            <summary>
+            Thrown when address doesn't resolve to a bluetooth device.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException"/> class.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+            <param name="innerException">Inner exception.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidAddressException"/> class.
+            </summary>
+            <param name="info">SerializationInfo.</param>
+            <param name="context">StreamingContext.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException">
+            <summary>
+            Thrown when attempting to access a device before it is properly initialized, or after it's been disposed.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException"/> class.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+            <param name="innerException">Inner exception.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.InvalidStateException"/> class.
+            </summary>
+            <param name="info">SerializationInfo.</param>
+            <param name="context">StreamingContext.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException">
+            <summary>
+            Thrown when service can't be found on bluetooth device.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException"/> class.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException"/> class.
+            </summary>
+            <param name="message">Exception message.</param>
+            <param name="innerException">Inner exception.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Error.ServiceNotFoundException"/> class.
+            </summary>
+            <param name="info">SerializationInfo.</param>
+            <param name="context">StreamingContext.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Sensors.LowEnergyHeartrateSensor">
+            <summary>
+            <para>
+            Bluetooth low energy heart rate sensor.
+            </para>
+            <para>
+            Service <see cref="F:BurnsBac.WindowsHardware.Bluetooth.Services.ServiceUuids.AssignedNumbers.Heart_Rate"/>.
+            </para>
+            <para>
+            Characteristic <see cref="F:BurnsBac.WindowsHardware.Bluetooth.Characteristics.CharacteristicUuids.AssignedNumbers.Heart_Rate_Measurement"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="E:BurnsBac.WindowsHardware.Bluetooth.Sensors.LowEnergyHeartrateSensor.HeartRateReceivedEvent">
+            <summary>
+            Event notification for data received from device.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Sensors.LowEnergyHeartrateSensor.#ctor(System.UInt64)">
+            <summary>
+            Initializes a new instance of the <see cref="!:BluetoothLowEnergyHeartrateSensor"/> class.
+            </summary>
+            <param name="deviceAddress">Bluetooth device address.</param>
+            <param name="characteristicAssignedNumber">Assigned number of the chactertistic to be read from device.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Sensors.LowEnergyHeartrateSensor.DataReceivedEventHandler(System.Object,BurnsBac.WindowsHardware.Bluetooth.SesnsorReadEventArgs)">
+            <summary>
+            Converts raw byte data to <see cref="T:BurnsBac.WindowsHardware.Bluetooth.Characteristics.HeartRateMeasurement"/> and forwards event.
+            </summary>
+            <param name="sender">Sender.</param>
+            <param name="e">Raw data.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Services.ServiceUuids">
+            <summary>
+            Constants and helper functions for services.
+            </summary>
+            <remarks>
+            https://www.bluetooth.com/specifications/gatt/services/
+            </remarks>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Services.ServiceUuids.AssignedNumbers">
+            <summary>
+            List of assigned numbers.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Services.ServiceUuids.ServiceToString(System.Guid)">
+            <summary>
+            Gets the display name of the service.
+            </summary>
+            <param name="serviceUuid">UUID to find name of.</param>
+            <returns>Name of assigned number, or string.empty.</returns>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.SesnsorReadEventArgs">
+            <summary>
+            Event arguments when receiving raw data from Bluetooth device.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.SesnsorReadEventArgs.Data">
+            <summary>
+            Gets data received from device event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.Bluetooth.SesnsorReadEventArgs.Length">
+            <summary>
+            Gets number of bytes in event data.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.Bluetooth.Utility">
+            <summary>
+            Helper methods.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.Bluetooth.Utility.UuidToAssignedNumber(System.Guid)">
+            <summary>
+            Extracts the assigned number from a UUID.
+            </summary>
+            <param name="g">UUID to extract assigned number from.</param>
+            <returns>Assigned number.</returns>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo">
+            <summary>
+            This class organizes information about a HID device.
+            </summary>
+            <remarks>
+            Raw input processing should happen elsewhere, like <see cref="T:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler"/>.
+            </remarks>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.HidpCapabilities">
+            <summary>
+            Gets HID device capabilities.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.ButtonCapabilities">
+            <summary>
+            Gets HID device button capabilities.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.ValueCapabilities">
+            <summary>
+            Gets HID device value capabilities.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.DeviceHandle">
+            <summary>
+            Gets or sets raw input device handle (not file handle).
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.ButtonCaps">
+            <summary>
+            Gets button capabilities. Shortcut for <see cref="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetButtonCapabilities(System.IntPtr,System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.ValueCaps">
+            <summary>
+            Gets value capabilities. Shortcut for <see cref="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetValueCapabilities(System.IntPtr,System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.#ctor(System.IntPtr)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo"/> class.
+            </summary>
+            <param name="deviceHandle">Pointer to raw input device handle (not file handle).</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetSerialNumber">
+            <summary>
+            This may not be available on some devices.
+            Gets HID device serial number. Calls hid.dll if necessary.
+            </summary>
+            <returns>Serial number.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetPhysicalDescriptor">
+            <summary>
+            This may not be available on all (most?) devices.
+            Gets HID device physical descriptor. Calls hid.dll if necessary.
+            </summary>
+            <returns>Physical descriptor.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetManufacturer">
+            <summary>
+            This may not be available on some devices.
+            Gets HID device manufacturer. Calls hid.dll if necessary.
+            </summary>
+            <returns>Manufacturer.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetProduct">
+            <summary>
+            This may not be available on some devices.
+            Gets HID device product name. Calls hid.dll if necessary.
+            </summary>
+            <returns>Product name.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetDeviceNameFull">
+            <summary>
+            Gets HID device name/path according to Windows operating system. Calls hid.dll if necessary.
+            This should contain Class code, SubClass code, Protocol code, and ClassGUID.
+            </summary>
+            <returns>Device name/path.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetRegistryDescription">
+            <summary>
+            Gets HID device description from windows registry.
+            </summary>
+            <returns>Device description.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.Dispose">
+            <summary>
+            Releases resources.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetFileHandle">
+            <summary>
+            Calls <see cref="M:BurnsBac.WinApi.Kernel32.Api.CreateFile(System.String,System.IO.FileAccess,System.IO.FileShare,System.IntPtr,System.IO.FileMode,System.IO.FileAttributes,System.IntPtr)"/> to get a file handle for the device.
+            </summary>
+            <returns>File handle.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetCapabilities(System.IntPtr,System.Boolean)">
+            <summary>
+            Gets HID device capabilities. If this has been called before, the
+            cached information is returned unless <paramref name="forceLoad"/> is set.
+            </summary>
+            <param name="preparsedData">Preparsed data.</param>
+            <param name="forceLoad">Optional override to force retrieving data from perparsed data again.</param>
+            <returns>Capabilities.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetButtonCapabilities(System.IntPtr,System.Boolean)">
+            <summary>
+            Gets HID device button capabilities. If this has been called before, the
+            cached information is returned unless <paramref name="forceLoad"/> is set.
+            </summary>
+            <param name="preparsedData">Preparsed data.</param>
+            <param name="forceLoad">Optional override to force retrieving data from perparsed data again.</param>
+            <returns>Button capabilities.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo.GetValueCapabilities(System.IntPtr,System.Boolean)">
+            <summary>
+            Gets HID device value capabilities. If this has been called before, the
+            cached information is returned unless <paramref name="forceLoad"/> is set.
+            </summary>
+            <param name="preparsedData">Preparsed data.</param>
+            <param name="forceLoad">Optional override to force retrieving data from perparsed data again.</param>
+            <returns>Value capabilities.</returns>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.HardwareWatch.HidResult">
+            <summary>
+            Ties together HID device information with current button/range values.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidResult.HidDeviceInfo">
+            <summary>
+            Gets information about the HID device.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidResult.ButtonIndexActive">
+            <summary>
+            Gets or sets the list of buttons that are currently active.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidResult.ButtonStates">
+            <summary>
+            Gets or sets the state of all buttons.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.HardwareWatch.HidResult.UsageValues">
+            <summary>
+            Gets or sets the range values.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.HardwareWatch.HidResult.UsagePageUsageValue">
+            <summary>
+            Ties together a UsagePage, a Usage, and a value.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardware.HardwareWatch.HidResult.UsagePageUsageValue.UsagePage">
+            <summary>
+            Usage page.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardware.HardwareWatch.HidResult.UsagePageUsageValue.Usage">
+            <summary>
+            Usage for the usage page.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardware.HardwareWatch.HidResult.UsagePageUsageValue.Value">
+            <summary>
+            Value for the input.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler">
+            <summary>
+            This class is designed to accept a WndProc message for raw input and extract HID information.
+            </summary>
+            <remarks>
+            Raw input stuff happens in this class, all the HID device data should be over in <see cref="T:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo"/>.
+            </remarks>
+        </member>
+        <member name="F:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler._devices">
+            <summary>
+            Devices seens by this handler. Key is the raw input device handle, not file handle.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler"/> class.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler.Dispose">
+            <summary>
+            Nothing to dispose in this class. Calls dispose on children <see cref="T:BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo"/>.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler.RawInputHidDetail(BurnsBac.WinApi.User32.RawInput)">
+            <summary>
+            Extracts HID information from RawInput message.
+            </summary>
+            <param name="ri">RawInput.</param>
+            <returns>Associated device information and current button/range status are returned.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler.GetPreparsedData(BurnsBac.WinApi.User32.RawInput)">
+            <summary>
+            I didn't want to stick this in the <see cref="T:BurnsBac.WinApi.Hid.Managed"/> class as this allocates memory
+            and returns, then you use that object (pPreparsedData) to make other calls.
+            </summary>
+            <param name="ri">RawInput object, just need the device handle in the header.</param>
+            <returns>Allocated memory for the preparsedData object.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler.GetAllReports(BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo,BurnsBac.WinApi.User32.RawInput)">
+            <summary>
+            Retrieves all current HID input reports for the device. Requires the file
+            handle be available (this will attempt to create if it doesn't exist).
+            </summary>
+            <param name="hidDevice">Hid device.</param>
+            <returns>All available input reports.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler.GetButtonUsageList(BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo,System.IntPtr,System.Collections.Generic.Dictionary{System.Int32,System.Byte[]})">
+            <summary>
+            Gets current button status.
+            </summary>
+            <param name="hidDevice">Hid device.</param>
+            <param name="preparsedData">Preparsed data.</param>
+            <param name="availableReports">All input reports.</param>
+            <returns>Number of buttons set, and the status of each button.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.HardwareWatch.RawInputHandler.GetUsageValues(BurnsBac.WindowsHardware.HardwareWatch.HidDeviceInfo,System.IntPtr,System.Collections.Generic.Dictionary{System.Int32,System.Byte[]})">
+            <summary>
+            Gets current HID status for things with ranges (controller sticks).
+            </summary>
+            <param name="hidDevice">Hid device.</param>
+            <param name="preparsedData">Preparsed data.</param>
+            <param name="availableReports">All input reports.</param>
+            <returns>Range data.</returns>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.SerialPort.ReadErrorHandling">
+            <summary>
+            Describes how to handle errors when receiving packets pet protocol.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardware.SerialPort.ReadErrorHandling.IgnoreRetry">
+            <summary>
+            Returns from read, will try again next interval.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardware.SerialPort.ReadErrorHandling.Stop">
+            <summary>
+            Disconnects the port.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardware.SerialPort.ReadErrorHandling.Throw">
+            <summary>
+            Throws exception.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy">
+            <summary>
+            Serial port wrapper class. Periodically polls port for data.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.DataReceivedHandler">
+            <summary>
+            Event delegate to accept raw data from serial port.
+            </summary>
+            <param name="sender">Sender.</param>
+            <param name="data">Serial port data.</param>
+        </member>
+        <member name="E:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.DataReceivedEvent">
+            <summary>
+            Event to accept raw data from serial port.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.BaudRate">
+            <summary>
+            Gets or sets connection baudrate.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.PollRateMs">
+            <summary>
+            Gets or sets rate to poll serial port for new data.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.PortName">
+            <summary>
+            Gets or sets connection port.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.ReadErrorAction">
+            <summary>
+            Gets or sets how to handle read errors.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy"/> class.
+            </summary>
+            <param name="portName">Port to open.</param>
+            <param name="baudRate">Connection baudrate.</param>
+            <param name="pollRateMs">Data poll interval time.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.Stop">
+            <summary>
+            Stops polling port for data. Serial port is closed and discarded.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.Start">
+            <summary>
+            Opens a new connection for the serial port and starts polling for data.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.PortPoll(System.Object,System.EventArgs)">
+            <summary>
+            Port poll interval event.
+            </summary>
+            <param name="sender">Sender.</param>
+            <param name="e">Args.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.SerialPort.SerialPortProxy.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:BurnsBac.WindowsHardware.SerialPort.SerialTranslatorBase">
+            <summary>
+            Base class to receive data from a serial port and translate to high level events.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardware.SerialPort.SerialTranslatorBase.SerialPort">
+            <summary>
+            Gets or sets serial port to monitor.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.SerialPort.SerialTranslatorBase.Hook(BurnsBac.WindowsHardware.SerialPort.SerialPortProxy)">
+            <summary>
+            Attaches to serial port to listen for data.
+            </summary>
+            <param name="serialPort"></param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardware.SerialPort.SerialTranslatorBase.Handler(System.Object,System.Byte[])">
+            <summary>
+            Translates serial data to high level event.
+            </summary>
+            <param name="sender">Sender.</param>
+            <param name="data">Serial data.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonChangeDirection">
+            <summary>
+            How mouse button changed.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonChangeDirection.Unknown">
+            <summary>
+            Default / unknown.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonChangeDirection.Up">
+            <summary>
+            Up / release event.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonChangeDirection.Down">
+            <summary>
+            Down / press.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource">
+            <summary>
+            Identify a mouse button source.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Unknown">
+            <summary>
+            Default / unknown.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.LeftButton">
+            <summary>
+            Left mouse button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.RightButton">
+            <summary>
+            Right mouse button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.MiddleButton">
+            <summary>
+            Middle mouse button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse4">
+            <summary>
+            Mouse 4 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse5">
+            <summary>
+            Mouse 5 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse6">
+            <summary>
+            Mouse 6 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse7">
+            <summary>
+            Mouse 7 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse8">
+            <summary>
+            Mouse 8 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse9">
+            <summary>
+            Mouse 9 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse10">
+            <summary>
+            Mouse 10 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse11">
+            <summary>
+            Mouse 11 button.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ButtonSource.Mouse12">
+            <summary>
+            Mouse 12 button.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.KeyChangeDirection">
+            <summary>
+            How key changed.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.KeyChangeDirection.Unknown">
+            <summary>
+            Default / unknown.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.KeyChangeDirection.KeyUp">
+            <summary>
+            Key up event.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.KeyChangeDirection.KeyDown">
+            <summary>
+            Key down event.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.MouseEventType">
+            <summary>
+            What triggered the mouse event.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.MouseEventType.Unknown">
+            <summary>
+            Default / unknown.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.MouseEventType.Move">
+            <summary>
+            Move event.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.MouseEventType.Scroll">
+            <summary>
+            Scroll event.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.MouseEventType.Button">
+            <summary>
+            Button press or release.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollChangeDirection">
+            <summary>
+            How mouse scroll changed.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollChangeDirection.Unknown">
+            <summary>
+            Default / unknown.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollChangeDirection.Up">
+            <summary>
+            Up scroll.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollChangeDirection.Down">
+            <summary>
+            Down scroll.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollSource">
+            <summary>
+            Which scroll wheel changed.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollSource.Unknown">
+            <summary>
+            Default / unknown.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollSource.VerticalScrollWheel">
+            <summary>
+            Default/vertical scroll.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollSource.HorizontalScrollWheel">
+            <summary>
+            Horizontal scroll.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollSource.Scroll3">
+            <summary>
+            Scroll wheel 3.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollSource.Scroll4">
+            <summary>
+            Scroll wheel 4.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.ScrollSource.Scroll5">
+            <summary>
+            Scroll wheel 5.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch">
+            <summary>
+            How to match window title.
+            </summary>
+            <remarks>
+            Used by <see cref="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.LowLevelWatcher"/>.
+            </remarks>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch.Unknown">
+            <summary>
+            Default / unknown.
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch.Exact">
+            <summary>
+            Exact title match (case is ignored).
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch.Contains">
+            <summary>
+            Title contains this text (case is ignored).
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch.BeginsWith">
+            <summary>
+            Title begins with this text (case is ignored).
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch.EndsWith">
+            <summary>
+            Title ends with this text (case is ignored).
+            </summary>
+        </member>
+        <member name="F:BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch.Regex">
+            <summary>
+            Title matches regex.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardChangeEventArgs">
+            <summary>
+            Arguments for keyboard change event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardChangeEventArgs.Direction">
+            <summary>
+            Type of key change, either key up or key down.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardChangeEventArgs.Key">
+            <summary>
+            Which key changed.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardChangeEventArgs.Alt">
+            <summary>
+            Whether or not the alt key is currently being held.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardWatcher">
+            <summary>
+            Hook keyboard events and notify changes.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardWatcher.SetWindowsHook">
+            <inheritdoc />
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardWatcher.LowLevelKeyboardHook(System.Int32,BurnsBac.WinApi.Windows.WindowsMessages,System.IntPtr)">
+            <summary>
+            Handler to run on keychange.
+            </summary>
+            <param name="nCode">Event code.</param>
+            <param name="wParam">Type of windows message.</param>
+            <param name="lParam">Keyboard status struct.</param>
+            <returns>Pointer to next callback.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardWatcher.RaiseEvent(BurnsBac.WindowsHardwareWatch.HardwareWatch.KeyboardChangeEventArgs)">
+            <summary>
+            Fires the event to any listeners.
+            </summary>
+            <param name="args">Arguments to send.</param>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.LowLevelWatcher">
+            <summary>
+            Common base class for hooking windows hardware events.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.LowLevelWatcher.Setup(BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums.WindowTitleMatch,System.String)">
+            <summary>
+            Pass through / pre-setup to hook windows event.
+            </summary>
+            <param name="titleMatch">How to match window title.</param>
+            <param name="windowTitle">Text (or regex) to match window title.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.LowLevelWatcher.GetActiveWindowTitle">
+            <summary>
+            Helper function. Returns title of currently active window.
+            </summary>
+            <returns>String or null.</returns>
+            <remarks>
+            https://stackoverflow.com/a/115905/1462295
+            .
+            </remarks>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.LowLevelWatcher.FromAllowedWindow">
+            <summary>
+            Determines whether the current active window is the one to listen to.
+            </summary>
+            <returns>True if so, false otherwise.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.LowLevelWatcher.SetWindowsHook">
+            <summary>
+            Hooks windows event for the specific handler.
+            </summary>
+            <returns>Pointer to hook handler.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.LowLevelWatcher.Dispose">
+            <summary>
+            Unhooks keyboard listener.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs">
+            <summary>
+            Arguments for mouse change event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.EventType">
+            <summary>
+            What triggered the event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.Button">
+            <summary>
+            Which button triggered the event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.Scroll">
+            <summary>
+            Which scroll wheel triggered the event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.ButtonDirection">
+            <summary>
+            How the button changed to cause the event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.ScrollDirection">
+            <summary>
+            How the scroll wheel changed to cause the event.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.NewPosition">
+            <summary>
+            New absolute position of mouse cursor.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.DeltaPosition">
+            <summary>
+            Offset between new and previous position of mouse cursor.
+            </summary>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs.EventSourceId">
+            <summary>
+            Gets id of event source.
+            </summary>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseWatcher">
+            <summary>
+            Hook mouse events and notify changes.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseWatcher.SetWindowsHook">
+            <inheritdoc />
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseWatcher.LowLevelMouseHook(System.Int32,BurnsBac.WinApi.Windows.WindowsMessages,System.IntPtr)">
+            <summary>
+            Handler to run on mouse change.
+            </summary>
+            <param name="nCode">Event code.</param>
+            <param name="wParam">Type of windows message.</param>
+            <param name="lParam">Keyboard status struct.</param>
+            <returns>Pointer to next callback.</returns>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseWatcher.RaiseEvent(BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseChangeEventArgs)">
+            <summary>
+            Fires the event to any listeners.
+            </summary>
+            <param name="args">Arguments to send.</param>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.HardwareWatch.MouseWatcher.BuildEventArgs(BurnsBac.WinApi.Windows.WindowsMessages,BurnsBac.WinApi.User32.MouseLowLevelHookStruct)">
+            <summary>
+            Parses event and builds event args.
+            </summary>
+            <param name="wParam">Type of event.</param>
+            <param name="mouse">Mouse event properties.</param>
+            <returns>Strongly typed event info.</returns>
+        </member>
+        <member name="T:BurnsBac.WindowsHardwareWatch.Windows.MessagePump">
+            <summary>
+            Helper wrapper to capture windows events in this application.
+            </summary>
+            <remarks>
+            Yes! of course there is a message pump, windows receives and sends messages
+            all the time, everything within windows is based on messages but when you
+            create a console application and you want to listen to the messages you need
+            to get an access to the message loop.
+            .
+            https://social.msdn.microsoft.com/Forums/vstudio/en-US/ed5be22c-cef8-4615-a625-d05caf113afc/console-keyboard-hook-not-getting-called?forum=csharpgeneral
+            </remarks>
+        </member>
+        <member name="P:BurnsBac.WindowsHardwareWatch.Windows.MessagePump.Instance">
+            <summary>
+            Gets the instance.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.Windows.MessagePump.#ctor">
+            <summary>
+            Instantiates a new instance of <see cref="T:BurnsBac.WindowsHardwareWatch.Windows.MessagePump" />.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.Windows.MessagePump.Shutdown">
+            <summary>
+            Stops iterator.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.Windows.MessagePump.Restart">
+            <summary>
+            Allows iterator to continue.
+            </summary>
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.Windows.MessagePump.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:BurnsBac.WindowsHardwareWatch.Windows.MessagePump.GetEnumerator">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
