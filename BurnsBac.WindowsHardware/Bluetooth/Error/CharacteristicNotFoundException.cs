@@ -21,7 +21,8 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Error
         /// Initializes a new instance of the <see cref="CharacteristicNotFoundException"/> class.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        public CharacteristicNotFoundException(string message) : base(message)
+        public CharacteristicNotFoundException(string message)
+            : base(message)
         {
         }
 
@@ -30,7 +31,8 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Error
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="innerException">Inner exception.</param>
-        public CharacteristicNotFoundException(string message, Exception innerException) : base(message, innerException)
+        public CharacteristicNotFoundException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
@@ -39,7 +41,8 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Error
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>
-        protected CharacteristicNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected CharacteristicNotFoundException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

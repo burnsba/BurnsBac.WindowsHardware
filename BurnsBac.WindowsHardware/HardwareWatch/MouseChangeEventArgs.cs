@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using BurnsBac.WinApi.Windows;
-using BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums;
-using BurnsBac.WindowsHardwareWatch.Windows;
+using BurnsBac.WindowsHardware.HardwareWatch.Enums;
+using BurnsBac.WindowsHardware.Windows;
 
-namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
+namespace BurnsBac.WindowsHardware.HardwareWatch
 {
     /// <summary>
     /// Arguments for mouse change event.
@@ -16,37 +16,37 @@ namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
         private const int Multiplier3 = 10000;
 
         /// <summary>
-        /// What triggered the event.
+        /// Gets what triggered the event.
         /// </summary>
         public MouseEventType EventType { get; internal set; }
 
         /// <summary>
-        /// Which button triggered the event.
+        /// Gets which button triggered the event.
         /// </summary>
         public ButtonSource Button { get; internal set; }
 
         /// <summary>
-        /// Which scroll wheel triggered the event.
+        /// Gets which scroll wheel triggered the event.
         /// </summary>
         public ScrollSource Scroll { get; internal set; }
 
         /// <summary>
-        /// How the button changed to cause the event.
+        /// Gets how the button changed to cause the event.
         /// </summary>
         public ButtonChangeDirection ButtonDirection { get; internal set; }
 
         /// <summary>
-        /// How the scroll wheel changed to cause the event.
+        /// Gets how the scroll wheel changed to cause the event.
         /// </summary>
         public ScrollChangeDirection ScrollDirection { get; internal set; }
 
         /// <summary>
-        /// New absolute position of mouse cursor.
+        /// Gets new absolute position of mouse cursor.
         /// </summary>
         public WindowsPoint NewPosition { get; internal set; }
 
         /// <summary>
-        /// Offset between new and previous position of mouse cursor.
+        /// Gets offset between new and previous position of mouse cursor.
         /// </summary>
         public WindowsPoint DeltaPosition { get; internal set; }
 
@@ -61,6 +61,15 @@ namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
             }
         }
 
+        /// <summary>
+        /// Get unique source id for mouse event.
+        /// </summary>
+        /// <param name="eventType">Type of mouse event.</param>
+        /// <param name="scroll">Scroll event source.</param>
+        /// <param name="scrollDirection">Type of scroll event.</param>
+        /// <param name="button">Button event source.</param>
+        /// <param name="buttonDirection">Type of button event.</param>
+        /// <returns>Unique id for event.</returns>
         public static int GetEventSourceId(MouseEventType eventType, ScrollSource scroll, ScrollChangeDirection scrollDirection, ButtonSource button, ButtonChangeDirection buttonDirection)
         {
             switch (eventType)

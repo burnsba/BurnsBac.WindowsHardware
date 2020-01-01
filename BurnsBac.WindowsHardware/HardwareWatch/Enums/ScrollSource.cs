@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums
+namespace BurnsBac.WindowsHardware.HardwareWatch.Enums
 {
     /// <summary>
     /// Which scroll wheel changed.

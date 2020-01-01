@@ -21,7 +21,8 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Error
         /// Initializes a new instance of the <see cref="InvalidAddressException"/> class.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        public InvalidAddressException(string message) : base(message)
+        public InvalidAddressException(string message)
+            : base(message)
         {
         }
 
@@ -30,7 +31,8 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Error
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="innerException">Inner exception.</param>
-        public InvalidAddressException(string message, Exception innerException) : base(message, innerException)
+        public InvalidAddressException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
@@ -39,7 +41,8 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Error
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>
-        protected InvalidAddressException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected InvalidAddressException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

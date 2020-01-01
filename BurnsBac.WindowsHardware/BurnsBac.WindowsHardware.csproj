@@ -5,7 +5,7 @@
     <Authors>Ben Burns</Authors>
     <Company>Ben Burns</Company>
     <Copyright>Ben Burns 2019</Copyright>
-    <FileVersion>1.1.5.2</FileVersion>
+    <FileVersion>1.1.5.3</FileVersion>
     <PackageLicenseFile>COPYING</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/burnsba/BurnsBac.WindowsHardware</PackageProjectUrl>
     <RepositoryUrl>https://github.com/burnsba/BurnsBac.WindowsHardware</RepositoryUrl>
@@ -13,6 +13,8 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageTags>mouse, keyboard, bluetooth, rawinput, hid</PackageTags>
     <Description>Hardware support for Windows OS. SetWindowsHookEx for low level mouse and low level keyboard. RawInput HID support for joystick,gamepad,mouse. Serial port polling. Generic bluetooth wrapper with heart rate monitor support.</Description>
+    <Version>1.0.1</Version>
+    <PackageReleaseNotes>Stylecop styling</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -24,7 +26,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BurnsBac.WinApi" Version="1.0.1" />
+    <PackageReference Include="BurnsBac.WinApi" Version="1.0.2" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.IO.Ports" Version="4.7.0" />
     <PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
     <PackageReference Include="System.Runtime.WindowsRuntime" Version="4.7.0" />

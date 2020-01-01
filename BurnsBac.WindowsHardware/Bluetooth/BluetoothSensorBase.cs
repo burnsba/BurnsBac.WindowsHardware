@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
+using BurnsBac.WindowsHardware.Bluetooth.Error;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
-using BurnsBac.WindowsHardware.Bluetooth.Error;
 
 namespace BurnsBac.WindowsHardware.Bluetooth
 {
@@ -14,7 +14,7 @@ namespace BurnsBac.WindowsHardware.Bluetooth
     /// Base class to interact with bluetooth sensor devices.
     /// </summary>
     /// <remarks>
-    /// https://blogs.msdn.microsoft.com/cdndevs/2017/04/28/uwp-working-with-bluetooth-devices-part-1/
+    /// https://blogs.msdn.microsoft.com/cdndevs/2017/04/28/uwp-working-with-bluetooth-devices-part-1/ .
     /// </remarks>
     public abstract class BluetoothSensorBase : IDisposable
     {
@@ -25,21 +25,6 @@ namespace BurnsBac.WindowsHardware.Bluetooth
         private ulong _deviceAddress;
         private ushort _serviceAssignedNumber;
         private ushort _characteristicAssignedNumber;
-
-        /// <summary>
-        /// Event notification for data received from device.
-        /// </summary>
-        public event EventHandler<SesnsorReadEventArgs> DataReceivedEvent;
-
-        /// <summary>
-        /// Event delegate to notify state change events.
-        /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="state">Device event data.</param>
-        protected void OnDataReceived(SesnsorReadEventArgs args)
-        {
-            DataReceivedEvent?.Invoke(this, args);
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BluetoothSensorBase"/> class.
@@ -67,6 +52,11 @@ namespace BurnsBac.WindowsHardware.Bluetooth
         }
 
         /// <summary>
+        /// Event notification for data received from device.
+        /// </summary>
+        public event EventHandler<SesnsorReadEventArgs> DataReceivedEvent;
+
+        /// <summary>
         /// Finds the characteristic on the bluetooth device. If the characteristic was previously found,
         /// nothing happens.
         /// </summary>
@@ -79,6 +69,105 @@ namespace BurnsBac.WindowsHardware.Bluetooth
             }
 
             return _setupState;
+        }
+
+        /// <summary>
+        /// Enables active notifications from the device.
+        /// </summary>
+        /// <returns>Status from trying to change ConfigurationDescriptor on device.</returns>
+        public virtual async Task<GattCommunicationStatus> EnableNotifications()
+        {
+            if (_setupState != 2)
+            {
+                throw new InvalidStateException("Data characteristic is not connected.");
+            }
+
+            if (_notificationsIsEnabled)
+            {
+                return GattCommunicationStatus.Success;
+            }
+
+            GattCommunicationStatus status =
+                await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue.Notify);
+
+            if (status == GattCommunicationStatus.Success)
+            {
+                _notificationsIsEnabled = true;
+                _dataCharacteristic.ValueChanged += DataCharacteristic_ValueChanged;
+            }
+
+            return status;
+        }
+
+        /// <summary>
+        /// Disables active notifications from the device.
+        /// </summary>
+        /// <returns>Status from trying to change ConfigurationDescriptor on device.</returns>
+        public virtual async Task<GattCommunicationStatus> DisableNotifications()
+        {
+            if (_notificationsIsEnabled == false)
+            {
+                return GattCommunicationStatus.Success;
+            }
+
+            GattCommunicationStatus status =
+                await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue.None);
+
+            if (status == GattCommunicationStatus.Success)
+            {
+                _notificationsIsEnabled = false;
+                _dataCharacteristic.ValueChanged -= DataCharacteristic_ValueChanged;
+            }
+
+            return status;
+        }
+
+        /// <summary>
+        /// Reads data from connected characteristic.
+        /// </summary>
+        /// <returns>Data from device.</returns>
+        public async Task<byte[]> ReadValue()
+        {
+            if (_setupState != 2)
+            {
+                throw new InvalidStateException("Data characteristic is not connected.");
+            }
+
+            GattReadResult readResult = await _dataCharacteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
+            var data = new byte[readResult.Value.Length];
+            DataReader.FromBuffer(readResult.Value).ReadBytes(data);
+            return data;
+        }
+
+        /// <inheritdoc />
+        public async void Dispose()
+        {
+            if (!object.ReferenceEquals(null, _dataCharacteristic) && _setupState == 2)
+            {
+                var status = await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                GattClientCharacteristicConfigurationDescriptorValue.None);
+
+                // try one more time if that failed
+                if (status != GattCommunicationStatus.Success)
+                {
+                    await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                        GattClientCharacteristicConfigurationDescriptorValue.None);
+                }
+            }
+
+            _dataCharacteristic = null;
+            _setupState = 0;
+        }
+
+        /// <summary>
+        /// Event delegate to notify state change events.
+        /// </summary>
+        /// <param name="args">Device event data.</param>
+        protected void OnDataReceived(SesnsorReadEventArgs args)
+        {
+            DataReceivedEvent?.Invoke(this, args);
         }
 
         /// <summary>
@@ -129,6 +218,25 @@ namespace BurnsBac.WindowsHardware.Bluetooth
         }
 
         /// <summary>
+        /// Event handler when received data via notification from device.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Data.</param>
+        private void DataCharacteristic_ValueChanged(
+            GattCharacteristic sender,
+            GattValueChangedEventArgs args)
+        {
+            var data = new byte[args.CharacteristicValue.Length];
+            DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
+
+            OnDataReceived(new SesnsorReadEventArgs()
+            {
+                Data = data,
+                Length = args.CharacteristicValue.Length,
+            });
+        }
+
+        /// <summary>
         /// Helper function, enumerates a service searching for a specific characteristic.
         /// </summary>
         /// <param name="service">Service to enumerate.</param>
@@ -147,115 +255,6 @@ namespace BurnsBac.WindowsHardware.Bluetooth
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Enables active notifications from the device.
-        /// </summary>
-        /// <returns>Status from trying to change ConfigurationDescriptor on device.</returns>
-        public virtual async Task<GattCommunicationStatus> EnableNotifications()
-        {
-            if (_setupState != 2)
-            {
-                throw new InvalidStateException("Data characteristic is not connected.");
-            }
-
-            if (_notificationsIsEnabled)
-            {
-                return GattCommunicationStatus.Success;
-            }
-
-            GattCommunicationStatus status =
-                await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                    GattClientCharacteristicConfigurationDescriptorValue.Notify);
-
-            if (status == GattCommunicationStatus.Success)
-            {
-                _notificationsIsEnabled = true;
-                _dataCharacteristic.ValueChanged += dataCharacteristic_ValueChanged;
-            }
-
-            return status;
-        }
-
-        /// <summary>
-        /// Disables active notifications from the device.
-        /// </summary>
-        /// <returns>Status from trying to change ConfigurationDescriptor on device.</returns>
-        public virtual async Task<GattCommunicationStatus> DisableNotifications()
-        {
-            if (_notificationsIsEnabled == false)
-            {
-                return GattCommunicationStatus.Success;
-            }
-
-            GattCommunicationStatus status =
-                await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                    GattClientCharacteristicConfigurationDescriptorValue.None);
-
-            if (status == GattCommunicationStatus.Success)
-            {
-                _notificationsIsEnabled = false;
-                _dataCharacteristic.ValueChanged -= dataCharacteristic_ValueChanged;
-            }
-
-            return status;
-        }
-
-        /// <summary>
-        /// Reads data from connected characteristic.
-        /// </summary>
-        /// <returns>Data from device.</returns>
-        public async Task<byte[]> ReadValue()
-        {
-            if (_setupState != 2)
-            {
-                throw new InvalidStateException("Data characteristic is not connected.");
-            }
-
-            GattReadResult readResult = await _dataCharacteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
-            var data = new byte[readResult.Value.Length];
-            DataReader.FromBuffer(readResult.Value).ReadBytes(data);
-            return data;
-        }
-
-        /// <inheritdoc />
-        public async void Dispose()
-        {
-            if (!object.ReferenceEquals(null, _dataCharacteristic) && _setupState == 2)
-            {
-                var status = await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                GattClientCharacteristicConfigurationDescriptorValue.None);
-
-                // try one more time if that failed
-                if (status != GattCommunicationStatus.Success)
-                {
-                    await _dataCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                        GattClientCharacteristicConfigurationDescriptorValue.None);
-                }
-            }
-
-            _dataCharacteristic = null;
-            _setupState = 0;
-        }
-
-        /// <summary>
-        /// Event handler when received data via notification from device.
-        /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="args">Data.</param>
-        private void dataCharacteristic_ValueChanged(
-            GattCharacteristic sender,
-            GattValueChangedEventArgs args)
-        {
-            var data = new byte[args.CharacteristicValue.Length];
-            DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
-
-            OnDataReceived(new SesnsorReadEventArgs()
-            {
-                Data = data,
-                Length = args.CharacteristicValue.Length
-            });
         }
     }
 }

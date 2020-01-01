@@ -8,8 +8,9 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Services
     /// Constants and helper functions for services.
     /// </summary>
     /// <remarks>
-    /// https://www.bluetooth.com/specifications/gatt/services/
+    /// https://www.bluetooth.com/specifications/gatt/services/ .
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:Enumeration items should be documented", Justification = "WindowsHardware")]
     public static class ServiceUuids
     {
         /// <summary>

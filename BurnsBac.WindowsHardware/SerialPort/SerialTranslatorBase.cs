@@ -17,7 +17,7 @@ namespace BurnsBac.WindowsHardware.SerialPort
         /// <summary>
         /// Attaches to serial port to listen for data.
         /// </summary>
-        /// <param name="serialPort"></param>
+        /// <param name="serialPort">Serial port to monitor.</param>
         public void Hook(SerialPortProxy serialPort)
         {
             SerialPort = serialPort;

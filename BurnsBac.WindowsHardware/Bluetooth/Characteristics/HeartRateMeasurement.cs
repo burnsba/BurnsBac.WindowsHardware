@@ -9,8 +9,9 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Characteristics
     /// Heart rate measurement characteristic.
     /// </summary>
     /// <remarks>
-    /// https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.heart_rate_measurement.xml
+    /// https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.heart_rate_measurement.xml .
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:Enumeration items should be documented", Justification = "WindowsHardware")]
     public class HeartRateMeasurement
     {
         /// <summary>
@@ -75,15 +76,15 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Characteristics
         /// <summary>
         /// Converts <see cref="SensorContactStatus"/> to specification text.
         /// </summary>
-        /// <param name="e">Object to convert.</param>
+        /// <param name="status">Object to convert.</param>
         /// <returns>Standard text.</returns>
         public static string SensorContactStatusToString(SensorContactStatus status)
         {
             switch (status)
             {
-                case (SensorContactStatus.ContactNotDetected):
+                case SensorContactStatus.ContactNotDetected:
                     return "Sensor Contact feature is supported, but contact is not detected";
-                case (SensorContactStatus.ContectDetected):
+                case SensorContactStatus.ContectDetected:
                     return "Sensor Contact feature is supported and contact is detected";
                 default:
                     return "Sensor Contact feature is not supported in the current connection";
@@ -99,7 +100,7 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Characteristics
         {
             switch (e)
             {
-                case (EnergyExpendedEnum.Present):
+                case EnergyExpendedEnum.Present:
                     return "Energy Expended field is present. Units: kilo Joules";
                 default:
                     return "Energy Expended field is not present";
@@ -115,7 +116,7 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Characteristics
         {
             switch (e)
             {
-                case (RrIntervalEnum.Present):
+                case RrIntervalEnum.Present:
                     return "One or more RR-Interval values are present.";
                 default:
                     return "RR-Interval values are not present.";

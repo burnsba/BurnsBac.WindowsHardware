@@ -8,24 +8,37 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using BurnsBac.WinApi.User32;
 using BurnsBac.WinApi.Windows;
-using BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums;
-using BurnsBac.WindowsHardwareWatch.Windows;
+using BurnsBac.WindowsHardware.HardwareWatch.Enums;
+using BurnsBac.WindowsHardware.Windows;
 
-namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
+namespace BurnsBac.WindowsHardware.HardwareWatch
 {
     /// <summary>
     /// Hook keyboard events and notify changes.
     /// </summary>
     public class KeyboardWatcher : LowLevelWatcher, IDisposable
     {
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, WindowsMessages wParam, IntPtr lParam);
-
         // this needs to be an instance member, otherwise it gets garbage collected away.
         private LowLevelKeyboardProc _llkp = null;
 
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, WindowsMessages wParam, IntPtr lParam);
+
+        /// <summary>
+        /// Change event delegate.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Args.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:Elements should be ordered by access", Justification = "WindowsHardwareWatch")]
         public delegate void KeyboardChangeEventHandler(object sender, KeyboardChangeEventArgs args);
+
+        /// <summary>
+        /// Change event.
+        /// </summary>
         public event KeyboardChangeEventHandler KeyboardChangeEvent;
 
+        /// <summary>
+        /// Gets time last message was received.
+        /// </summary>
         public DateTime LastMessageReceived { get; private set; } = DateTime.MinValue;
 
         /// <inheritdoc />
@@ -54,8 +67,8 @@ namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
         /// <returns>Pointer to next callback.</returns>
         private IntPtr LowLevelKeyboardHook(int nCode, WindowsMessages wParam, IntPtr lParam)
         {
-            bool isKeyDown = (wParam == WindowsMessages.KEYDOWN || wParam == WindowsMessages.SYSKEYDOWN);
-            bool isKeyUp = (wParam == WindowsMessages.KEYUP || wParam == WindowsMessages.SYSKEYUP);
+            bool isKeyDown = wParam == WindowsMessages.KEYDOWN || wParam == WindowsMessages.SYSKEYDOWN;
+            bool isKeyUp = wParam == WindowsMessages.KEYUP || wParam == WindowsMessages.SYSKEYUP;
             bool isAlt = false;
 
             KeyboardLowLevelHookStruct kbd = (KeyboardLowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardLowLevelHookStruct));

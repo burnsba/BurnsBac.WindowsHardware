@@ -6,22 +6,39 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums;
-using BurnsBac.WindowsHardwareWatch.Windows;
+using BurnsBac.WindowsHardware.HardwareWatch.Enums;
+using BurnsBac.WindowsHardware.Windows;
 
-namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
+namespace BurnsBac.WindowsHardware.HardwareWatch
 {
     /// <summary>
     /// Common base class for hooking windows hardware events.
     /// </summary>
     public abstract class LowLevelWatcher : IDisposable
     {
+        /// <summary>
+        /// Maximum allowed length in window title.
+        /// </summary>
         protected const int WindowMaxTitleLength = 256;
 
+        /// <summary>
+        /// Title of window to match.
+        /// </summary>
         protected string _windowTitle;
+
+        /// <summary>
+        /// If the match type is regex, this is the compile regex to match.
+        /// </summary>
         protected Regex _windowTitleRegex = null;
+
+        /// <summary>
+        /// How to match the title.
+        /// </summary>
         protected WindowTitleMatch _titleMatch;
 
+        /// <summary>
+        /// Reference to hook.
+        /// </summary>
         protected IntPtr _hook = IntPtr.Zero;
 
         /// <summary>
@@ -51,6 +68,26 @@ namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
 
             // Now hook event.
             _hook = SetWindowsHook();
+        }
+
+        /// <summary>
+        /// Unhooks keyboard listener.
+        /// </summary>
+        public void Dispose()
+        {
+            try
+            {
+                if (!object.ReferenceEquals(null, _hook) && !IntPtr.Zero.Equals(_hook))
+                {
+                    if (WinApi.User32.Api.UnhookWindowsHookEx(_hook))
+                    {
+                        _hook = IntPtr.Zero;
+                    }
+                }
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -109,24 +146,5 @@ namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
         /// </summary>
         /// <returns>Pointer to hook handler.</returns>
         protected abstract IntPtr SetWindowsHook();
-
-        /// <summary>
-        /// Unhooks keyboard listener.
-        /// </summary>
-        public void Dispose()
-        {
-            try
-            {
-                if (!object.ReferenceEquals(null, _hook) && !IntPtr.Zero.Equals(_hook))
-                {
-                    if (WinApi.User32.Api.UnhookWindowsHookEx(_hook))
-                    {
-                        _hook = IntPtr.Zero;
-                    }
-                }
-            }
-            catch
-            { }
-        }
     }
 }

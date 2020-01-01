@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using BurnsBac.WinApi.Windows;
-using BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums;
-using BurnsBac.WindowsHardwareWatch.Windows;
+using BurnsBac.WindowsHardware.HardwareWatch.Enums;
+using BurnsBac.WindowsHardware.Windows;
 
-namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
+namespace BurnsBac.WindowsHardware.HardwareWatch
 {
     /// <summary>
     /// Arguments for keyboard change event.
@@ -13,17 +13,17 @@ namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
     public class KeyboardChangeEventArgs
     {
         /// <summary>
-        /// Type of key change, either key up or key down.
+        /// Gets type of key change, either key up or key down.
         /// </summary>
         public KeyChangeDirection Direction { get; internal set; }
 
         /// <summary>
-        /// Which key changed.
+        /// Gets which key changed.
         /// </summary>
         public Keys Key { get; internal set; }
 
         /// <summary>
-        /// Whether or not the alt key is currently being held.
+        /// Gets a value indicating whether or not the alt key is currently being held.
         /// </summary>
         public bool Alt { get; internal set; }
     }

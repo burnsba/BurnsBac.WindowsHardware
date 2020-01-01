@@ -8,7 +8,7 @@ using System.Threading;
 using BurnsBac.WinApi.User32;
 using BurnsBac.WinApi.Windows;
 
-namespace BurnsBac.WindowsHardwareWatch.Windows
+namespace BurnsBac.WindowsHardware.Windows
 {
     /// <summary>
     /// Helper wrapper to capture windows events in this application.
@@ -19,13 +19,19 @@ namespace BurnsBac.WindowsHardwareWatch.Windows
     /// create a console application and you want to listen to the messages you need
     /// to get an access to the message loop.
     /// .
-    /// https://social.msdn.microsoft.com/Forums/vstudio/en-US/ed5be22c-cef8-4615-a625-d05caf113afc/console-keyboard-hook-not-getting-called?forum=csharpgeneral
+    /// https://social.msdn.microsoft.com/Forums/vstudio/en-US/ed5be22c-cef8-4615-a625-d05caf113afc/console-keyboard-hook-not-getting-called?forum=csharpgeneral .
     /// </remarks>
     public class MessagePump : IEnumerable<bool>, IEnumerable
     {
         private static MessagePump _instance;
         private static WinUserMessage _message;
         private static bool _shutdown = false;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessagePump"/> class.
+        /// </summary>
+        private MessagePump()
+        { }
 
         /// <summary>
         /// Gets the instance.
@@ -42,12 +48,6 @@ namespace BurnsBac.WindowsHardwareWatch.Windows
                 return _instance;
             }
         }
-
-        /// <summary>
-        /// Instantiates a new instance of <see cref="MessagePump" />.
-        /// </summary>
-        private MessagePump()
-        { }
 
         /// <summary>
         /// Stops iterator.
@@ -135,17 +135,5 @@ namespace BurnsBac.WindowsHardwareWatch.Windows
 
             yield return false;
         }
-
-        //[Serializable]
-        //private struct WindowsMessage
-        //{
-        //    public IntPtr hwnd;
-        //    public IntPtr lParam;
-        //    public int message;
-        //    public int pt_x;
-        //    public int pt_y;
-        //    public int time;
-        //    public IntPtr wParam;
-        //}
     }
 }

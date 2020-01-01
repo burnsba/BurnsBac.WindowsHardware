@@ -8,26 +8,39 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using BurnsBac.WinApi.User32;
 using BurnsBac.WinApi.Windows;
-using BurnsBac.WindowsHardwareWatch.HardwareWatch.Enums;
-using BurnsBac.WindowsHardwareWatch.Windows;
+using BurnsBac.WindowsHardware.HardwareWatch.Enums;
+using BurnsBac.WindowsHardware.Windows;
 
-namespace BurnsBac.WindowsHardwareWatch.HardwareWatch
+namespace BurnsBac.WindowsHardware.HardwareWatch
 {
     /// <summary>
     /// Hook mouse events and notify changes.
     /// </summary>
     public class MouseWatcher : LowLevelWatcher, IDisposable
     {
-        private WindowsPoint _previousePosition = new WindowsPoint(0,0);
-
-        private delegate IntPtr LowLevelMouseProc(int nCode, WindowsMessages wParam, IntPtr lParam);
+        private WindowsPoint _previousePosition = new WindowsPoint(0, 0);
 
         // this needs to be an instance member, otherwise it gets garbage collected away.
         private LowLevelMouseProc _llmp = null;
 
+        private delegate IntPtr LowLevelMouseProc(int nCode, WindowsMessages wParam, IntPtr lParam);
+
+        /// <summary>
+        /// Change event delegate.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Args.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:Elements should be ordered by access", Justification = "WindowsHardwareWatch")]
         public delegate void MouseChangeEventHandler(object sender, MouseChangeEventArgs args);
+
+        /// <summary>
+        /// Change event.
+        /// </summary>
         public event MouseChangeEventHandler MouseChangeEvent;
 
+        /// <summary>
+        /// Gets time last message was received.
+        /// </summary>
         public DateTime LastMessageReceived { get; private set; } = DateTime.MinValue;
 
         /// <inheritdoc />

@@ -49,6 +49,7 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
             /// </summary>
             public uint Value;
 
+            /// <inheritdoc />
             public override string ToString()
             {
                 return $"{WinApi.Hid.Utility.UsagePageAndUsageToString((int)UsagePage, (int)Usage)} = {Value}";

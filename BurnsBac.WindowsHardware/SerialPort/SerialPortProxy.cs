@@ -18,6 +18,24 @@ namespace BurnsBac.WindowsHardware.SerialPort
         private SP _serialPort;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="SerialPortProxy"/> class.
+        /// </summary>
+        /// <param name="portName">Port to open.</param>
+        /// <param name="baudRate">Connection baudrate.</param>
+        /// <param name="pollRateMs">Data poll interval time.</param>
+        public SerialPortProxy(string portName, int baudRate, int pollRateMs)
+        {
+            PortName = portName;
+            BaudRate = baudRate;
+            PollRateMs = pollRateMs;
+
+            _pollTimer = new System.Timers.Timer();
+            _pollTimer.AutoReset = true;
+            _pollTimer.Interval = pollRateMs;
+            _pollTimer.Elapsed += PortPoll;
+        }
+
+        /// <summary>
         /// Event delegate to accept raw data from serial port.
         /// </summary>
         /// <param name="sender">Sender.</param>
@@ -50,24 +68,6 @@ namespace BurnsBac.WindowsHardware.SerialPort
         public ReadErrorHandling ReadErrorAction { get; set; } = ReadErrorHandling.IgnoreRetry;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerialPortProxy"/> class.
-        /// </summary>
-        /// <param name="portName">Port to open.</param>
-        /// <param name="baudRate">Connection baudrate.</param>
-        /// <param name="pollRateMs">Data poll interval time.</param>
-        public SerialPortProxy(string portName, int baudRate, int pollRateMs)
-        {
-            PortName = portName;
-            BaudRate = baudRate;
-            PollRateMs = pollRateMs;
-
-            _pollTimer = new System.Timers.Timer();
-            _pollTimer.AutoReset = true;
-            _pollTimer.Interval = pollRateMs;
-            _pollTimer.Elapsed += PortPoll;
-        }
-
-        /// <summary>
         /// Stops polling port for data. Serial port is closed and discarded.
         /// </summary>
         public void Stop()
@@ -84,7 +84,9 @@ namespace BurnsBac.WindowsHardware.SerialPort
                 _serialPort.Close();
             }
             catch (System.IO.IOException)
-            { }
+            {
+            }
+
             _serialPort.Dispose();
             _serialPort = null;
         }
@@ -105,6 +107,32 @@ namespace BurnsBac.WindowsHardware.SerialPort
 
             _serialPort.Open();
             _serialPort.DiscardInBuffer();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (!object.ReferenceEquals(null, _pollTimer))
+            {
+                _pollTimer.Stop();
+            }
+
+            if (!object.ReferenceEquals(null, _serialPort))
+            {
+                if (_serialPort.IsOpen)
+                {
+                    try
+                    {
+                        _serialPort.Close();
+                    }
+                    catch (System.IO.IOException)
+                    {
+                    }
+                }
+
+                _serialPort.Dispose();
+                _serialPort = null;
+            }
         }
 
         /// <summary>
@@ -178,31 +206,6 @@ namespace BurnsBac.WindowsHardware.SerialPort
             if (DataReceivedEvent != null)
             {
                 DataReceivedEvent(this, temp);
-            }
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            if (!object.ReferenceEquals(null, _pollTimer))
-            {
-                _pollTimer.Stop();
-            }
-
-            if (!object.ReferenceEquals(null, _serialPort))
-            {
-                if (_serialPort.IsOpen)
-                {
-                    try
-                    {
-                        _serialPort.Close();
-                    }
-                    catch (System.IO.IOException)
-                    { }
-                }
-
-                _serialPort.Dispose();
-                _serialPort = null;
             }
         }
     }

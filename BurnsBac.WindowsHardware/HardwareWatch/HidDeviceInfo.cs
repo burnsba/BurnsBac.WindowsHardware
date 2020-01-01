@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.Win32;
 using BurnsBac.WinApi.Error;
 using BurnsBac.WinApi.Hid;
 using BurnsBac.WinApi.User32;
+using Microsoft.Win32;
 
 namespace BurnsBac.WindowsHardware.HardwareWatch
 {
@@ -41,6 +41,15 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
         private bool _hidpValueCapsLoaded = false;
         private ReadOnlyCollection<HidpButtonCaps> _buttonCapsReadonly = null;
         private ReadOnlyCollection<HidpValueCaps> _valueCapsReadonly = null;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HidDeviceInfo"/> class.
+        /// </summary>
+        /// <param name="deviceHandle">Pointer to raw input device handle (not file handle).</param>
+        internal HidDeviceInfo(IntPtr deviceHandle)
+        {
+            DeviceHandle = deviceHandle;
+        }
 
         /// <summary>
         /// Gets HID device capabilities.
@@ -117,15 +126,6 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HidDeviceInfo"/> class.
-        /// </summary>
-        /// <param name="deviceHandle">Pointer to raw input device handle (not file handle).</param>
-        internal HidDeviceInfo(IntPtr deviceHandle)
-        {
-            DeviceHandle = deviceHandle;
-        }
-
-        /// <summary>
         /// This may not be available on some devices.
         /// Gets HID device serial number. Calls hid.dll if necessary.
         /// </summary>
@@ -160,9 +160,9 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
             {
                 try
                 {
-                    // Some guy on the internet says, 
+                    // Some guy on the internet says,
                     //     You can capture a usb etw log trace if you want to see if
-                    //     it is a device error. There are very few devices that’s actually 
+                    //     it is a device error. There are very few devices that’s actually
                     //     report a physical descriptor. Are you sure your device reports one ?
                     _physicalDescriptor = WinApi.Hid.Managed.HidD_GetPhysicalDescriptor(GetFileHandle());
                 }
@@ -267,9 +267,13 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
 
                 RegistryKey rk;
                 if (Environment.Is64BitOperatingSystem)
+                {
                     rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                }
                 else
+                {
                     rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+                }
 
                 _registryDescription = rk
                     .OpenSubKey("System")
@@ -292,6 +296,7 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
                 // HardwareID
                 // Mfg
                 // Security
+                ///////
 
                 _registryDescriptionLoaded = true;
             }
@@ -324,11 +329,13 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
             return DeviceHandle.ToString();
         }
 
+#pragma warning disable CS0419 // Ambiguous reference in cref attribute
         /// <summary>
         /// Calls <see cref="WinApi.Kernel32.Api.CreateFile"/> to get a file handle for the device.
         /// </summary>
         /// <returns>File handle.</returns>
         internal SafeHandle GetFileHandle()
+#pragma warning restore CS0419 // Ambiguous reference in cref attribute
         {
             if (!_fileHandleLoaded)
             {
@@ -366,7 +373,7 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
                 HidpCapabilities = WinApi.User32.Managed.HidpGetCapabilities(preparsedData);
                 _hidpCapsLoaded = true;
             }
-            
+
             return HidpCapabilities;
         }
 

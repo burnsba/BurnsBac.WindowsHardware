@@ -8,8 +8,9 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Characteristics
     /// Constants and helper functions for characteristics.
     /// </summary>
     /// <remarks>
-    /// https://www.bluetooth.com/specifications/gatt/characteristics/
+    /// https://www.bluetooth.com/specifications/gatt/characteristics/ .
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1602:Enumeration items should be documented", Justification = "WindowsHardware")]
     public static class CharacteristicUuids
     {
         /// <summary>

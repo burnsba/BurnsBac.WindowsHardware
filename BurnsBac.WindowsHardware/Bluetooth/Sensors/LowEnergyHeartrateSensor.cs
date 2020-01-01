@@ -17,24 +17,23 @@ namespace BurnsBac.WindowsHardware.Bluetooth.Sensors
     /// </summary>
     public class LowEnergyHeartrateSensor : BluetoothSensorBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LowEnergyHeartrateSensor"/> class.
+        /// </summary>
+        /// <param name="deviceAddress">Bluetooth device address.</param>
+        public LowEnergyHeartrateSensor(ulong deviceAddress)
+            : base(
+                  deviceAddress,
+                  (ushort)Services.ServiceUuids.AssignedNumbers.Heart_Rate,
+                  (ushort)Characteristics.CharacteristicUuids.AssignedNumbers.Heart_Rate_Measurement)
+        {
+            this.DataReceivedEvent += DataReceivedEventHandler;
+        }
 
         /// <summary>
         /// Event notification for data received from device.
         /// </summary>
         public event EventHandler<Characteristics.HeartRateMeasurement> HeartRateReceivedEvent;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BluetoothLowEnergyHeartrateSensor"/> class.
-        /// </summary>
-        /// <param name="deviceAddress">Bluetooth device address.</param>
-        /// <param name="characteristicAssignedNumber">Assigned number of the chactertistic to be read from device.</param>
-        public LowEnergyHeartrateSensor(ulong deviceAddress)
-            : base(deviceAddress,
-                  (ushort)Services.ServiceUuids.AssignedNumbers.Heart_Rate,
-                 (ushort)Characteristics.CharacteristicUuids.AssignedNumbers.Heart_Rate_Measurement)
-        {
-            this.DataReceivedEvent += DataReceivedEventHandler;
-        }
 
         /// <summary>
         /// Converts raw byte data to <see cref="Characteristics.HeartRateMeasurement"/> and forwards event.

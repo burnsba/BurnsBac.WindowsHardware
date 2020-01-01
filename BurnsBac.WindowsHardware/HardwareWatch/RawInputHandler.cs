@@ -27,9 +27,7 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
         /// Initializes a new instance of the <see cref="RawInputHandler"/> class.
         /// </summary>
         public RawInputHandler()
-        {
-
-        }
+        { }
 
         /// <summary>
         /// Nothing to dispose in this class. Calls dispose on children <see cref="HidDeviceInfo"/>.
@@ -42,6 +40,11 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
             }
         }
 
+        /// <summary>
+        /// Accepts WndProc parameter and extract RawInput data.
+        /// </summary>
+        /// <param name="lParam">The lParam from WndProc.</param>
+        /// <returns>Parsed RawInput.</returns>
         public RawInput WndProcToRawInput(IntPtr lParam)
         {
             var ri = WinApi.User32.Managed.GetRawInputData(lParam);
@@ -101,16 +104,19 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
                         // but only one report is used in practice? Not really sure.
                         //
                         // https://www.codeproject.com/Articles/185522/Using-the-Raw-Input-API-to-Process-Joystick-Input
+                        /////
 
                         var buttonStatus = GetButtonUsageList(hidDevice, preparsedData, availableReports);
 
                         result.ButtonIndexActive = buttonStatus.Item2;
 
-                        var numberOfButtons = (hidDevice.ButtonCaps[0].Range.UsageMax - hidDevice.ButtonCaps[0].Range.UsageMin + 1);
+                        var numberOfButtons = hidDevice.ButtonCaps[0].Range.UsageMax - hidDevice.ButtonCaps[0].Range.UsageMin + 1;
                         var bButtonStates = new byte[numberOfButtons];
 
                         for (int i = 0; i < buttonStatus.Item1; i++)
+                        {
                             bButtonStates[result.ButtonIndexActive[i] - hidDevice.ButtonCaps[0].Range.UsageMin] = 1;
+                        }
 
                         result.ButtonStates = bButtonStates.Select(x => x > 0 ? true : false).ToArray();
                     }
@@ -154,7 +160,7 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
             IntPtr pPreparsedData = Marshal.AllocHGlobal((int)dwSize);
 
             callResult = WinApi.User32.Api.GetRawInputDeviceInfo(ri.Header.hDevice, GetRawInputDeviceInfoCommand.RIDI_PREPARSEDDATA, pPreparsedData, ref dwSize);
-            
+
             win32error = Marshal.GetLastWin32Error();
 
             if (win32error > 0)
@@ -175,6 +181,7 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
         /// handle be available (this will attempt to create if it doesn't exist).
         /// </summary>
         /// <param name="hidDevice">Hid device.</param>
+        /// <param name="ri">Raw input to get reports for.</param>
         /// <returns>All available input reports.</returns>
         private Dictionary<int, byte[]> GetAllReports(HidDeviceInfo hidDevice, RawInput ri)
         {
@@ -207,7 +214,7 @@ namespace BurnsBac.WindowsHardware.HardwareWatch
             else
             {
                 // If there's only one report, copy from the rawinput buffer.
-                // This avoids the dll call, but also avoids a bug in HidD_GetInputReport 
+                // This avoids the dll call, but also avoids a bug in HidD_GetInputReport
                 // when the only reportid is zero.
                 byte[] reportBuffer = (byte[])ri.Data.Hid.bRawData.Clone();
 
