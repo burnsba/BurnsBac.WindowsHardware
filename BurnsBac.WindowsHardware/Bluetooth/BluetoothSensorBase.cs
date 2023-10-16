@@ -21,6 +21,7 @@ namespace BurnsBac.WindowsHardware.Bluetooth
         private int _setupState = 0;
         private GattCharacteristic _dataCharacteristic = null;
         private bool _notificationsIsEnabled = false;
+        private GattDeviceService _deviceService = null;
 
         private ulong _deviceAddress;
         private ushort _serviceAssignedNumber;
@@ -157,6 +158,12 @@ namespace BurnsBac.WindowsHardware.Bluetooth
                 }
             }
 
+            if (!object.ReferenceEquals(null, _deviceService))
+            {
+                _deviceService.Dispose();
+                _deviceService = null;
+            }
+
             _dataCharacteristic = null;
             _setupState = 0;
         }
@@ -182,6 +189,12 @@ namespace BurnsBac.WindowsHardware.Bluetooth
 
             GattCharacteristic foundCharacteristic = null;
 
+            if (!object.ReferenceEquals(null, _deviceService))
+            {
+                _deviceService.Dispose();
+                _deviceService = null;
+            }
+
             if (_serviceAssignedNumber == 0)
             {
                 foreach (var service in services.Services)
@@ -191,6 +204,7 @@ namespace BurnsBac.WindowsHardware.Bluetooth
                     foundCharacteristic = await FindCharacteristicInService(service, _characteristicAssignedNumber);
                     if (!object.ReferenceEquals(null, foundCharacteristic))
                     {
+                        _deviceService = service;
                         _serviceAssignedNumber = Bluetooth.Utility.UuidToAssignedNumber(service.Uuid);
                         break;
                     }
@@ -198,14 +212,14 @@ namespace BurnsBac.WindowsHardware.Bluetooth
             }
             else
             {
-                var service = services.Services.Where(x => Utility.UuidToAssignedNumber(x.Uuid) == _serviceAssignedNumber).FirstOrDefault();
+                _deviceService = services.Services.Where(x => Utility.UuidToAssignedNumber(x.Uuid) == _serviceAssignedNumber).FirstOrDefault();
 
-                if (object.ReferenceEquals(null, service))
+                if (object.ReferenceEquals(null, _deviceService))
                 {
                     throw new Bluetooth.Error.ServiceNotFoundException($"Could not find service with assigned number 0x{_serviceAssignedNumber.ToString("X2")}");
                 }
 
-                foundCharacteristic = await FindCharacteristicInService(service, _characteristicAssignedNumber);
+                foundCharacteristic = await FindCharacteristicInService(_deviceService, _characteristicAssignedNumber);
             }
 
             if (object.ReferenceEquals(null, foundCharacteristic))
@@ -244,8 +258,35 @@ namespace BurnsBac.WindowsHardware.Bluetooth
         /// <returns><see cref="GattCharacteristic"/> of found characteristic, or null.</returns>
         private async Task<GattCharacteristic> FindCharacteristicInService(GattDeviceService service, ushort characteristicAssignedNumber)
         {
-            var characteristics = await service.GetCharacteristicsAsync();
+            var characteristics = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
+
+            int safety = 5;
+            while (!characteristics.Characteristics.Any())
+            {
+                System.Threading.Thread.Sleep(100);
+
+                characteristics = await service.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
+
+                safety--;
+
+                if (safety <= 0)
+                {
+                    break;
+                }
+            }
+
             foreach (var characteristic in characteristics.Characteristics)
+            {
+                var can = Bluetooth.Utility.UuidToAssignedNumber(characteristic.Uuid);
+                if (can == characteristicAssignedNumber)
+                {
+                    return characteristic;
+                }
+            }
+
+            var cs = service.GetAllCharacteristics();
+
+            foreach (var characteristic in cs)
             {
                 var can = Bluetooth.Utility.UuidToAssignedNumber(characteristic.Uuid);
                 if (can == characteristicAssignedNumber)
